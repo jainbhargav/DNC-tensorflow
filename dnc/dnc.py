@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.python.ops.rnn_cell import LSTMStateTuple
+from tensorflow.python.ops.rnn_cell import LSTMStateTuple #Classes storing split RNNCell state
 from memory import Memory
 import utility
 import os
@@ -32,7 +32,7 @@ class DNC:
             the size of the data batch
         """
 
-        self.input_size = input_size
+        self.input_size = input_size #setting up class variable with the passed value while intializing
         self.output_size = output_size
         self.max_sequence_length = max_sequence_length
         self.words_num = memory_words_num
@@ -40,15 +40,16 @@ class DNC:
         self.read_heads = memory_read_heads
         self.batch_size = batch_size
 
-        self.memory = Memory(self.words_num, self.word_size, self.read_heads, self.batch_size)
-        self.controller = controller_class(self.input_size, self.output_size, self.read_heads, self.word_size, self.batch_size)
-
+        self.memory = Memory(self.words_num, self.word_size, self.read_heads, self.batch_size) #setting up memory matrix
+        self.controller = controller_class(self.input_size, self.output_size, self.read_heads, self.word_size, self.batch_size)     #setting up controller
+    
         # input data placeholders
-        self.input_data = tf.placeholder(tf.float32, [batch_size, None, input_size], name='input')
-        self.target_output = tf.placeholder(tf.float32, [batch_size, None, output_size], name='targets')
-        self.sequence_length = tf.placeholder(tf.int32, name='sequence_length')
+        self.input_data = tf.placeholder(tf.float32, [batch_size, None, input_size], name='input') #we need to input it sess.run(input_data: [[1,2], [2,3]])
+        self.target_output = tf.placeholder(tf.float32, [batch_size, None, output_size], name='targets') #we need to input target output
+        self.sequence_length = tf.placeholder(tf.int32, name='sequence_length') #input sequence length
 
-        self.build_graph()
+        self.build_graph() #builds the computational graph that performs a step-by-step evaluation
+        #of the input data batches
 
 
     def _step_op(self, step, memory_state, controller_state=None):
